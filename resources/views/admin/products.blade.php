@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
+@section('title')
+<title>{{ $title, config('app.name', 'Laravel') }}</title>
+@endsection
+
 @section('content')
-<div class='container'>
     <h1>Список продуктов</h1>
-</div>
 @endsection

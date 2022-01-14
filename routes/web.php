@@ -17,16 +17,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::prefix('admin')->middleware('is_admin')->group(function(){
+    Route::get('/', [AdminController::class, 'admin'])->name('admin');
     Route::get('/users', [AdminController::class, 'users'])->name('adminUsers');
     Route::get('/products', [AdminController::class, 'products'])->name('adminProducts');
     Route::get('/categories', [AdminController::class, 'categories'])->name('adminCategories');
+    Route::get('/test', [AdminController::class, 'test'])->name('adminTest');
+
 });
 
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
