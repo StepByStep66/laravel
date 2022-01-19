@@ -14,19 +14,29 @@ class ProfileController extends Controller
         return view('profile', compact('user')); 
     }
 
-    public function save()
+    public function save(Request $request)
     {
         $input = request()->all();
 
         request()->validate([
             'name' => 'required',
             'email' => "email|required|unique:users,email,{$input['userId']}",
+            'picture' => 'mimetypes:image/*'
         ]);
         $name = $input['name'];
         $email = $input['email'];
         $userId = $input['userId'];
-
+        $picture = $input['picture'] ?? null;
+        $newAddress = $input['new_address'];
         $user = User::find($userId);
+
+        if ($picture) {
+            $ext = $picture->getClientOriginalExtension();
+            $fileName = time() . rand(10000, 99999) . '.' . $ext;
+            $picture->storeAs('public/users', $fileName);
+            $user->picture = "users/$fileName";
+        }
+
         $user->name = $name;
         $user->email = $email;  
         $user->save();
