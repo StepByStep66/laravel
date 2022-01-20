@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\address;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
     public function profile ($id)
     {
         $user = User::findOrFail($id);
-        return view('profile', compact('user')); 
+        $addresses = address::where('user_id', $user->id)->get();
+        return view('profile', compact('user', 'addresses')); 
     }
 
     public function save(Request $request)
@@ -29,6 +30,17 @@ class ProfileController extends Controller
         $picture = $input['picture'] ?? null;
         $newAddress = $input['new_address'];
         $user = User::find($userId);
+
+        if ($newAddress) {
+            address::where('user_id', $user->id)->update([
+                'main' => 0
+            ]);
+            address::create([
+                'user_id' => $user->id,
+                'address' => $newAddress,
+                'main' => 1
+            ]);
+        }
 
         if ($picture) {
             $ext = $picture->getClientOriginalExtension();

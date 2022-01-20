@@ -31,6 +31,17 @@
         <input name="name" value="{{ $user->name }}" class="form-control">
     </div>
     <div class="mb-3">
+        <label class="form-label">Список адресов</label>
+        <ul>
+            @forelse ($user->addresses as $address)
+                <li @if ($address->main) class="fw-bold" @endif>
+                    {{ $address->address }}</li>
+            @empty 
+                <em>Список пуст</em>
+            @endforelse
+        </ul>
+    </div> 
+    <div class="mb-3">
         <label class="form-label">Новый адрес</label>
         <input name="new_address" class="form-control">
     </div> 
