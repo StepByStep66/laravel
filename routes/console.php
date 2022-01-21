@@ -35,29 +35,46 @@ Artisan::command('parseEkatalog', function () {
 
     $divs = $xpath->query("//div[@class='model-short-div list-item--goods   ']");
     $productsOnePage = $divs->length;
-    $pages = ceil($totalProducts / $productsOnePage); //округление в большую сторону
-    dd($pages);
+    $pages = (int) ceil($totalProducts / $productsOnePage);
+    $products = [];
+    for ($i = 0; $i < $pages; $i++) {
 
-    foreach ($divs as $div) {
-        $a = $xpath->query("descendant::a[@class='model-short-title no-u no-u']", $div);
-        $name = $a[0]->nodeValue;
+        $nextUrl = $url . "&page_=$i";
+        dump($nextUrl);
+        $data = file_get_contents($nextUrl);
 
-        $price = 0;
-        $ranges = $xpath->query("descendant::div[@class='model-price-range']", $div);
-        if ($ranges->length == 1) {
-            foreach ($ranges[0]->childNodes as $child) {
-                if ($child->nodeName == 'a') {
-                    $price = 'от ' . $child->nodeValue;
+        $dom = new DomDocument();
+        @$dom->loadHTMl($data);
+
+        $xpath = new DOMXPath($dom);
+
+        $divs = $xpath->query("//div[contains(@class, 'model-short-div list-item--goods') or contains(@class, 'left-art-block')]");
+
+        foreach ($divs as $div) {
+            $a = $xpath->query("descendant::a[contains(@class, 'model-short-title no-u no-u') or contains(@class, 'ib post-link')]", $div);
+            $name = $a[0]->nodeValue;
+
+            $price = 0;
+            $ranges = $xpath->query("descendant::div[@class='model-price-range']", $div);
+            if ($ranges->length == 1) {
+                foreach ($ranges[0]->childNodes as $child) {
+                    if ($child->nodeName == 'a') {
+                        $price = 'от ' . $child->nodeValue;
+                    }
                 }
             }
-        }
 
-        $ranges = $xpath->query("descendant::div[@class='pr31 ib']", $div);
-        if ($ranges->length == 1) {
-            $price = $ranges[0]->nodeValue;
+            $ranges = $xpath->query("descendant::div[@class='pr31 ib']", $div);
+            if ($ranges->length == 1) {
+                $price = $ranges[0]->nodeValue;
+            }
+            $products[] = [
+                'name' => $name,
+                'price' => $price
+            ];
         }
-        dump("$name: $price");
     }
+    dd($products);
 });
 
 Artisan::command('massCategoriesInsert', function () {
