@@ -16,6 +16,66 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
+Artisan::command('parseEkatalog', function () {
+
+    $url = "https://www.e-katalog.ru/ek-list.php?katalog_=189&search_=rtx+3090";
+
+    $data = file_get_contents($url);
+
+    $dom = new DomDocument();
+    @$dom->loadHTMl($data);
+
+    $xpath = new DOMXPath($dom);
+
+    $totalProductsString = $xpath->query("//span[@class='t-g-q']")[0]->nodeValue ?? false;
+    preg_match_all('/\d+/', $totalProductsString, $matches);     // регулярное выражение, ищет числа в строке
+    $totalProducts = (int) $matches[0][0];
+
+    $divs = $xpath->query("//div[contains(@class, 'model-short-div list-item--goods') or contains(@class, 'model-short-div list-item--offers')]");
+    $productsOnePage = $divs->length;
+    $pages = (int) ceil($totalProducts / $productsOnePage);
+    $products = [];
+
+    for ($i = 0; $i < $pages; $i++) {
+
+        $nextUrl = $url . "&page_=$i";
+        dump($nextUrl);
+        $data = file_get_contents($nextUrl);
+
+        $dom = new DomDocument();
+        @$dom->loadHTMl($data);
+
+        $xpath = new DOMXPath($dom);
+
+        $divs = $xpath->query("//div[contains(@class, 'model-short-div list-item--goods') or contains(@class, 'model-short-div list-item--offers')]");
+
+        foreach ($divs as $div) {
+            $a = $xpath->query("descendant::a[contains(@class, 'model-short-title no-u') or contains(text(), 'Видеокарта')]", $div);
+            $name = $a[0]->nodeValue;
+
+            $price = 0;
+            $ranges = $xpath->query("descendant::div[@class='model-price-range']", $div);
+            if ($ranges->length == 1) {
+                foreach ($ranges[0]->childNodes as $child) {
+                    if ($child->nodeName == 'a') {
+                        $price = 'от ' . $child->nodeValue;
+                    }
+                }
+            }
+
+            $ranges = $xpath->query("descendant::div[@class='pr31 ib']", $div);
+            if ($ranges->length == 1) {
+                $price = $ranges[0]->nodeValue;
+            }
+            $products[] = [
+                'name' => $name,
+                'price' => $price
+            ];
+        }
+    }
+    dump($products);
+});
+
 Artisan::command('massCategoriesInsert', function () {
     $categories = [
         [
