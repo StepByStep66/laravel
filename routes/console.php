@@ -18,9 +18,7 @@ use Illuminate\Support\Facades\Artisan;
 
 Artisan::command('parseEkatalog', function () {
 
-    $search = 'intel+core';
-
-    $url = "https://www.e-katalog.ru/ek-list.php?search_=$search&katalog_from_search_=186";
+    $url = "https://www.e-katalog.ru/ek-list.php?katalog_=189&search_=rtx+3090";
 
     $data = file_get_contents($url);
 
@@ -33,10 +31,11 @@ Artisan::command('parseEkatalog', function () {
     preg_match_all('/\d+/', $totalProductsString, $matches);     // регулярное выражение, ищет числа в строке
     $totalProducts = (int) $matches[0][0];
 
-    $divs = $xpath->query("//div[@class='model-short-div list-item--goods   ']");
+    $divs = $xpath->query("//div[contains(@class, 'model-short-div list-item--goods') or contains(@class, 'model-short-div list-item--offers')]");
     $productsOnePage = $divs->length;
     $pages = (int) ceil($totalProducts / $productsOnePage);
     $products = [];
+
     for ($i = 0; $i < $pages; $i++) {
 
         $nextUrl = $url . "&page_=$i";
@@ -48,10 +47,10 @@ Artisan::command('parseEkatalog', function () {
 
         $xpath = new DOMXPath($dom);
 
-        $divs = $xpath->query("//div[contains(@class, 'model-short-div list-item--goods') or contains(@class, 'left-art-block')]");
+        $divs = $xpath->query("//div[contains(@class, 'model-short-div list-item--goods') or contains(@class, 'model-short-div list-item--offers')]");
 
         foreach ($divs as $div) {
-            $a = $xpath->query("descendant::a[contains(@class, 'model-short-title no-u no-u') or contains(@class, 'ib post-link')]", $div);
+            $a = $xpath->query("descendant::a[contains(@class, 'model-short-title no-u') or contains(text(), 'Видеокарта')]", $div);
             $name = $a[0]->nodeValue;
 
             $price = 0;
@@ -74,7 +73,7 @@ Artisan::command('parseEkatalog', function () {
             ];
         }
     }
-    dd($products);
+    dump($products);
 });
 
 Artisan::command('massCategoriesInsert', function () {
