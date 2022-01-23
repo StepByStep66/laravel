@@ -28,7 +28,10 @@ class HomeController extends Controller
     }
 
     public function category (Category $category) {
-        $products = $category->products;
-        return view('category', compact('products'));
+        $data = [
+            'products' => $category->products,
+            'category' => $category
+        ];
+        return view('category', $data);
     }
 }

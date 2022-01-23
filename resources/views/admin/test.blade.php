@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
+@section('title')
+<title>{{ $title }}</title>
+@endsection
+
 @section('content')
-    <h1>{{ $title }}</h1>
 @if ($number > 5)
     Ваше число больше 5
 @else

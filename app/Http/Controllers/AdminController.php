@@ -42,7 +42,7 @@ class AdminController extends Controller
             'title' => 'Тестовая страничка с примерами',
             'number' => 2,
             'numbers' => [1, 3, 5, 7]
-        ];
+        ]; //передаем массив, во view можно потом обращаться к ключам как к переменным
         return view('admin.test', $testData);
     }
     public function enterAsUser($id)
