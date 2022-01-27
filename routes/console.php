@@ -4,6 +4,7 @@ use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -120,25 +121,25 @@ Artisan::command('massCategoriesInsert', function () {
 });
 
 Artisan::command('deleteCategory', function () {
-        //$category = Category::find(4);
-        //$category->delete();
-    // Category::where('id', 1)->delete();
-    Category::whereNotNull('id')->delete();
+        Auth::loginUsingId(1);
+        Category::find(51)->delete();
+        //Category::where('id', 50)->delete();
+        // Category::whereNotNull('id')->delete();
 });
 
 Artisan::command('updateCategory', function () {
-    Category::where('id', 2)->update([
-    'name' => 'Процессоры'
+
+    Category::where('id', 13)->update([
+    'name' => 'Процессоры!'
     ]);
 });
 
 Artisan::command('createCategory', function () {
     $category = new Category([
-        'name' => 'Видеокарты',
-        'description' => 'Самые лучшие'
+        'name' => 'Корпуса123456',
+        'description' => 'ATX'
     ]);
     $category->save();
-    dd($category);
 });
 
 Artisan::command('inspire', function () {
