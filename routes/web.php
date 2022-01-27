@@ -24,6 +24,7 @@ Route::prefix('admin')->middleware('is_admin')->group(function(){
     Route::get('/categories', [AdminController::class, 'categories'])->name('adminCategories');
     Route::get('/test', [AdminController::class, 'test'])->name('adminTest');
     Route::get('/enterAsUser/{id}', [AdminController::class, 'enterAsUser'])->name('enterAsUser');
+    Route::post('/exportCategories', [AdminController::class, 'exportCategories'])->name('exportCategories');
 });
 
 Route::get('/category/{category}', [HomeController::class, 'category'])->name('category');
