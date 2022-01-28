@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -122,21 +123,59 @@ Artisan::command('massCategoriesInsert', function () {
 
 Artisan::command('deleteCategory', function () {
         Auth::loginUsingId(1);
-        Category::find(51)->delete();
-        //Category::where('id', 50)->delete();
+        // Category::find(22)->delete(); //работает с обсервером
+        Category::where('id', '23')->first()->delete(); 
+        // where возвращает маасив,а не модель, это не попадет в логи.
+        // При массовом удалении надо писать лог на месте 
+        // (с first()-норм, возвращается модель)
+        
         // Category::whereNotNull('id')->delete();
+});
+
+Artisan::command('queryBuilder', function () {
+    $data = DB::table('categories as c')
+        ->select(
+            'c.id',
+            'c.name',
+            'c.description'
+        )
+        ->where('name', 'Процессоры')
+        ->first();
+    
+    // dd($data);
+            
+    $data = DB::table('categories as c')
+    ->select(
+        'c.name',
+        DB::raw('count(p.id) as product_quantity'),
+        DB::raw('sum(p.price) as priceAmount')
+    )
+    ->leftJoin('products as p', function ($join) {
+        $join->on( 'c.id', 'p.category_id');
+    })
+        ->groupBy('c.id')
+        ->get();
+
+    // dd($data);
+
+    DB::table('categories')
+        ->orderBy('id')
+        ->chunk(1, function ($categories) { // разбивает вывод на чанки
+            dump($categories->count());
+        });
 });
 
 Artisan::command('updateCategory', function () {
 
-    Category::where('id', 13)->update([
-    'name' => 'Процессоры!'
+    Auth::loginUsingId(1);
+    Category::where('id', 13)->first()->update([
+    'name' => 'Процессоры'
     ]);
 });
 
 Artisan::command('createCategory', function () {
     $category = new Category([
-        'name' => 'Корпуса123456',
+        'name' => 'Корпуса77',
         'description' => 'ATX'
     ]);
     $category->save();

@@ -31,9 +31,12 @@ class CategoryObserver
      */
     public function updated(Category $category)
     {
+        $changedField = [];
         $user = Auth::user();
-        $now = Carbon::now()->toDateTimeString();
-        Log::info("{$now}: {$user->name}, CREATE_CATEGORY {$category->name}");
+        $changedField = $category->getDirty();
+        foreach ($changedField as $key => $value) {
+        Log::info("{$user->name}: UPDATE_CATEGORY старое значение поля {$key} было: {$category->getOriginal($key)}, а теперь: {$value}"); 
+        }
     }
 
     /**
