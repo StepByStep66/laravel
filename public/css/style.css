@@ -16,3 +16,14 @@
   justify-content: space-around;
   line-height: 37px;
 }
+#addresses .form-check-input:checked {
+  opacity: 1;
+  font-weight: bold;
+}
+
+#addresses .form-check {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin: 0 0 0 25px;
+}

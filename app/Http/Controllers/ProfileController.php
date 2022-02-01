@@ -30,15 +30,23 @@ class ProfileController extends Controller
         $picture = $input['picture'] ?? null;
         $newAddress = $input['new_address'];
         $user = User::find($userId);
+        $setAsDefault = $input['setAsDefault'] ?? null;
+        $addressesToDelete = $input['addressesToDelete'] ?? null;
 
-        if ($newAddress) {
+        if ($setAsDefault) {
             address::where('user_id', $user->id)->update([
                 'main' => 0
             ]);
+            address::where('id', $setAsDefault)->update([
+                'main' => 1
+            ]);
+        } 
+
+        if ($newAddress) {
             address::create([
                 'user_id' => $user->id,
                 'address' => $newAddress,
-                'main' => 1
+                'main' => 0
             ]);
         }
 
@@ -47,6 +55,13 @@ class ProfileController extends Controller
             $fileName = time() . rand(10000, 99999) . '.' . $ext;
             $picture->storeAs('public/users', $fileName);
             $user->picture = "users/$fileName";
+        }
+
+        if ($addressesToDelete) { 
+            foreach ($addressesToDelete as $addressToDelete) {
+                //address::where('id', $addressToDelete)->delete();
+                address::find($addressToDelete)->delete();
+            }
         }
 
         $user->name = $name;
