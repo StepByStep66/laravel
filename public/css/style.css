@@ -11,7 +11,7 @@
 .product-name {
   height: 70px;
 }
-.card-btn {
+.product-buttons {
   display: flex;
   justify-content: space-around;
   line-height: 37px;

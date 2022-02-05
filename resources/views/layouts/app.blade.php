@@ -37,8 +37,13 @@
                     </ul>
 
                     <!-- Right Side Of Navbar -->
+                    <!-- Корзина -->
                     <ul class="navbar-nav ms-auto">
-
+                    <li class="nav-item">   
+                            <a class="nav-link" href="{{ route('cart') }}">
+                                Корзина ({{ array_sum(session('cart') ?? []) }})
+                            </a>
+                    </li>
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
