@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\address;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -22,8 +23,11 @@ class ProfileController extends Controller
         request()->validate([
             'name' => 'required',
             'email' => "email|required|unique:users,email,{$input['userId']}",
-            'picture' => 'mimetypes:image/*'
-        ]);
+            'picture' => 'mimetypes:image/*',
+            'current_password' => 'current_password|nullable',
+            'password' => 'confirmed|min:8|nullable' // правило само ищет поле password_confirmation для поля password (может быть любое имя (но и в поле подтверждения дб оно же))
+        ]);        
+
         $name = $input['name'];
         $email = $input['email'];
         $userId = $input['userId'];
@@ -32,6 +36,9 @@ class ProfileController extends Controller
         $user = User::find($userId);
         $setAsDefault = $input['setAsDefault'] ?? null;
         $addressesToDelete = $input['addressesToDelete'] ?? null;
+
+        $user->password = Hash::make($input['password']);
+        $user->save();
 
         if ($setAsDefault) {
             address::where('user_id', $user->id)->update([

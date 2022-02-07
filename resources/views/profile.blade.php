@@ -30,16 +30,28 @@
             <label for="exampleInputPassword1" class="form-label">Имя</label>
             <input name="name" value="{{ $user->name }}" class="form-control">
         </div>
+        <div class="mb-3">
+            <label class="form-label">Текущий пароль</label>
+            <input type="password" name="current_password" class="form_control">
+        </div>        
+        <div class="mb-3">
+            <label class="form-label">Новый пароль</label>
+            <input type="password" name="password" class="form_control">
+        </div>        
+        <div class="mb-3">
+            <label class="form-label">Подтвердите новый пароль</label>
+            <input type="password" name="password_confirmation" class="form_control">
+        </div>
         <div class="mb-3" id="addresses">
             <label class="form-label">Список адресов</label>
                 @forelse ($user->addresses as $address)
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="setAsDefault" value="{{ $address->id }}" @if ($address->main) checked @endif>
-                            <label class="form-check-label" for="setAsDefault">@if ($address->main) <b> @endif {{ $address->address }} @if ($address->main) (основной)</b> @endif </label>
+                            <label class="form-check-label" for="setAsDefault">@if ($address->main) <b> @endif  {{ $address->address }} @if ($address->main) (основной)</b> @endif </label>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="{{ $address->id }}" name="addressesToDelete[]">
                             <label class="form-check-label" for="addressesToDelete[]">Удалить</label>
-                        </div>
+                        </div>  
                         </div>
                 @empty 
                     <em>Список пуст</em>

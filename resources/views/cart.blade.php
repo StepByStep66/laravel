@@ -67,7 +67,7 @@
             @csrf
             <input class="form-control mb-2" name="email" value="{{ $user->email ?? ''}}">
             <input class="form-control mb-2" name="address" value="{{ $user->addresses()->where('main', 1)->first()->address ?? ''}}">
-            <button type="success" class="btn btn-succsess">Оформить заказ</button>
+            <button type="success" class="btn btn-success">Оформить заказ</button>
         </form>
     @endif
 @endsection 
