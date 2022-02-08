@@ -8,14 +8,17 @@
 .card-text {
   height: 46px;
 }
+
 .product-name {
   height: 70px;
 }
+
 .product-buttons {
   display: flex;
   justify-content: space-around;
   line-height: 37px;
 }
+
 #addresses .form-check-input:checked {
   opacity: 1;
   font-weight: bold;
