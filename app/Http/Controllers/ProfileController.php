@@ -37,8 +37,10 @@ class ProfileController extends Controller
         $setAsDefault = $input['setAsDefault'] ?? null;
         $addressesToDelete = $input['addressesToDelete'] ?? null;
 
-        $user->password = Hash::make($input['password']);
-        $user->save();
+        if ($input['password']){
+            $user->password = Hash::make($input['password']);
+            $user->save();
+        }
 
         if ($setAsDefault) {
             address::where('user_id', $user->id)->update([
