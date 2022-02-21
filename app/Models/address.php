@@ -14,4 +14,8 @@ class address extends Model
         'address',
         'main'
     ];
+
+    public function orders () {
+        return $this->hasMany(Order::class);
+    }
 }

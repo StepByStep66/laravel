@@ -44,12 +44,17 @@
         </div>
         <div class="mb-3" id="addresses">
             <label class="form-label">Список адресов</label>
+                @if (session('addrCanNotBeDelete'))
+                <div class="alert alert-success">
+                    Нельзя удалить адрес на который уже есть заказы
+                </div>
+                @endif
                 @forelse ($user->addresses as $address)
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="setAsDefault" value="{{ $address->id }}" @if ($address->main) checked @endif>
                             <label class="form-check-label" for="setAsDefault">@if ($address->main) <b> @endif  {{ $address->address }} @if ($address->main) (основной)</b> @endif </label>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="{{ $address->id }}" name="addressesToDelete[]">
+                            <input class="form-check-input" @if ($address->orders->count()) disabled @endif type="checkbox" value="{{ $address->id }}" name="addressesToDelete[]">
                             <label class="form-check-label" for="addressesToDelete[]">Удалить</label>
                         </div>  
                         </div>
@@ -59,7 +64,9 @@
         </div> 
         <div class="mb-3">
             <label class="form-label">Новый адрес</label>
-            <input name="new_address" class="form-control">
+            <input name="new_address" class="form-control"><br>
+            <input class="form-check-input" type="checkbox" name="newAddrToMain">
+            <label class="form-check-label" for="newAddrToMain">Сделать основным</label>
         </div> 
         <button type="submit" class="btn btn-primary">Сохранить</button>
     </form>

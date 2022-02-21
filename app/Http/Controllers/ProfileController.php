@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\address;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use PhpParser\NodeVisitor\FirstFindingVisitor;
 
 class ProfileController extends Controller
 {
@@ -25,7 +27,7 @@ class ProfileController extends Controller
             'email' => "email|required|unique:users,email,{$input['userId']}",
             'picture' => 'mimetypes:image/*',
             'current_password' => 'current_password|nullable',
-            'password' => 'confirmed|min:8|nullable' // правило само ищет поле password_confirmation для поля password (может быть любое имя (но и в поле подтверждения дб оно же))
+            'password' => 'confirmed|min:8|nullable', // правило само ищет поле password_confirmation для поля password (может быть любое имя (но и в поле подтверждения дб оно же))
         ]);        
 
         $name = $input['name'];
@@ -35,6 +37,7 @@ class ProfileController extends Controller
         $newAddress = $input['new_address'];
         $user = User::find($userId);
         $setAsDefault = $input['setAsDefault'] ?? null;
+        $newAddrToMain = $input['newAddrToMain'] ?? null;
         $addressesToDelete = $input['addressesToDelete'] ?? null;
 
         if ($input['password']){
@@ -42,36 +45,53 @@ class ProfileController extends Controller
             $user->save();
         }
 
-        if ($setAsDefault) {
+        if ($newAddress && $newAddrToMain) {
             address::where('user_id', $user->id)->update([
                 'main' => 0
             ]);
-            address::where('id', $setAsDefault)->update([
+            address::create([
+                'user_id' => $user->id,
+                'address' => $newAddress,
                 'main' => 1
             ]);
-        } 
-
-        if ($newAddress) {
+        } else if ($newAddress && !$newAddrToMain) {
             address::create([
                 'user_id' => $user->id,
                 'address' => $newAddress,
                 'main' => 0
             ]);
-        }
+            address::where('user_id', $user->id)->update([
+                'main' => 0
+            ]);
+            address::where('id', $setAsDefault)->update([
+            'main' => 1
+            ]);
+        } else {
+            address::where('user_id', $user->id)->update([
+                'main' => 0
+            ]);
+            address::where('id', $setAsDefault)->update([
+            'main' => 1
+            ]);
+            }
 
         if ($picture) {
             $ext = $picture->getClientOriginalExtension();
             $fileName = time() . rand(10000, 99999) . '.' . $ext;
             $picture->storeAs('public/users', $fileName);
             $user->picture = "users/$fileName";
-        }
+        };
 
         if ($addressesToDelete) { 
             foreach ($addressesToDelete as $addressToDelete) {
-                //address::where('id', $addressToDelete)->delete();
-                address::find($addressToDelete)->delete();
+                //if (Order::where('address_id', $addressToDelete)->first()) {
+                if (address::find($addressToDelete)->orders->count()) {
+                    session()->flash('addrCanNotBeDelete');
+                } else { 
+                    address::find($addressToDelete) -> delete();
+                }
             }
-        }
+        };
 
         $user->name = $name;
         $user->email = $email;  
