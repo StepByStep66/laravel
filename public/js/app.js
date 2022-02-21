@@ -5301,26 +5301,109 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      users: [],
+      selected: null,
+      inputText: '',
       name: 'Stepan',
+      lastName: 'Sarasek',
       counter: 0,
       showPicture: true,
+      options: [1, 2, 3],
+      text: '',
       categories: [{
-        id: 1,
+        id: 12,
         name: 'Видеокарты'
       }, {
-        id: 2,
+        id: 13,
         name: 'Процессоры'
       }]
     };
   },
+  watch: {
+    selected: function selected(newValue, oldValue) {
+      console.log("\u043D\u043E\u0432\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435: ".concat(newValue, ", \u0441\u0442\u0430\u0440\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435: ").concat(oldValue));
+    }
+  },
+  computed: {
+    buttonClass: function buttonClass() {
+      return this.selected ? 'btn-success' : 'btn-primary';
+    },
+    fullName: function fullName() {
+      return this.name + ' ' + this.lastName;
+    },
+    reversedText: function reversedText() {
+      return this.text.split('').reverse().join('');
+    }
+  },
   methods: {
+    getData: function getData() {
+      var _this = this;
+
+      var params = {
+        id: 20
+      };
+      axios.post('/api/test', params).then(function (Response) {
+        _this.users = Response.data;
+      });
+    },
+    selectChanged: function selectChanged() {
+      console.log('Значение селекта изменилось');
+      console.log(this.selected);
+    },
+    reverseText: function reverseText() {
+      return this.text.split('').reverse().join('');
+    },
+    listenInput: function listenInput() {
+      console.log(this.inputText);
+    },
     addCategory: function addCategory() {
       this.categories.push({
-        id: 4,
-        name: 'Оперативная память'
+        id: 14,
+        name: 'Чипы'
       });
     },
     counterPlus: function counterPlus() {
@@ -28033,11 +28116,13 @@ var render = function () {
             ]),
             _vm._v(" "),
             _c("td", [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(category.name) +
-                  "\n                "
-              ),
+              _c("a", { attrs: { href: "/category/" + category.id } }, [
+                _vm._v(
+                  "\n                        " +
+                    _vm._s(category.name) +
+                    "\n                    "
+                ),
+              ]),
             ]),
           ])
         }),
@@ -28050,6 +28135,181 @@ var render = function () {
       { staticClass: "btn btn-primary", on: { click: _vm.addCategory } },
       [_vm._v("Добавить категорию")]
     ),
+    _vm._v("\n    " + _vm._s(_vm.fullName) + "\n    "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.inputText,
+          expression: "inputText",
+        },
+      ],
+      staticClass: "form-control",
+      domProps: { value: _vm.inputText },
+      on: {
+        input: [
+          function ($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.inputText = $event.target.value
+          },
+          _vm.listenInput,
+        ],
+      },
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.name,
+          expression: "name",
+        },
+      ],
+      staticClass: "form-control",
+      domProps: { value: _vm.name },
+      on: {
+        input: function ($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.name = $event.target.value
+        },
+      },
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.text,
+          expression: "text",
+        },
+      ],
+      staticClass: "form-control",
+      domProps: { value: _vm.text },
+      on: {
+        input: function ($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.text = $event.target.value
+        },
+      },
+    }),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v("\n    " + _vm._s(_vm.reversedText) + "\n    "),
+    _c("br"),
+    _vm._v("\n    " + _vm._s(_vm.reverseText()) + "\n    "),
+    _c("br"),
+    _vm._v(" "),
+    _c(
+      "select",
+      {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.selected,
+            expression: "selected",
+          },
+        ],
+        staticClass: "form-control mb-5",
+        on: {
+          change: [
+            function ($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function (o) {
+                  return o.selected
+                })
+                .map(function (o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.selected = $event.target.multiple
+                ? $$selectedVal
+                : $$selectedVal[0]
+            },
+            _vm.selectChanged,
+          ],
+        },
+      },
+      [
+        _c(
+          "option",
+          { attrs: { selected: "", disabled: "" }, domProps: { value: null } },
+          [_vm._v("-- Please, select --")]
+        ),
+        _vm._v(" "),
+        _vm._l(_vm.options, function (option, idx) {
+          return _c("option", { key: idx, domProps: { value: option } }, [
+            _vm._v("\n            " + _vm._s(option) + "\n        "),
+          ])
+        }),
+      ],
+      2
+    ),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        staticClass: "btn mt-5",
+        class: { "btn-success": _vm.selected },
+        attrs: { disabled: !_vm.selected },
+      },
+      [_vm._v("Добавление класса кнопки")]
+    ),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        staticClass: "btn mt-5",
+        class: _vm.buttonClass,
+        attrs: { disabled: !_vm.selected },
+      },
+      [_vm._v("Смена класса кнопки")]
+    ),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c(
+      "button",
+      { staticClass: "btn btn-primary", on: { click: _vm.getData } },
+      [_vm._v("Получить данные")]
+    ),
+    _vm._v(" "),
+    _c("table", { staticClass: "table table-bordered" }, [
+      _c(
+        "tbody",
+        [
+          _vm._l(_vm.users, function (user) {
+            return _c("tr", { key: user.id }, [
+              _c("td", [_vm._v(_vm._s(user.id))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(user.name))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(user.email))]),
+            ])
+          }),
+          _vm._v(" "),
+          !_vm.users.length ? _c("tr", [_vm._m(1)]) : _vm._e(),
+        ],
+        2
+      ),
+    ]),
   ])
 }
 var staticRenderFns = [
@@ -28062,6 +28322,16 @@ var staticRenderFns = [
         _c("th", [_vm._v("#")]),
         _vm._v(" "),
         _c("th", [_vm._v("Категория")]),
+      ]),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", { staticClass: "text-center", attrs: { colspan: "3" } }, [
+      _c("em", [
+        _vm._v("\n                        Данных нет\n                    "),
       ]),
     ])
   },

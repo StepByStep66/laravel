@@ -19,10 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/test', function () {
+Route::post('/test', function () {
     $id = request('id');
     if (!$id) {
         return User::get();
     }
-    return User::findOrFail($id);
+    return [User::findOrFail($id)];
 });
