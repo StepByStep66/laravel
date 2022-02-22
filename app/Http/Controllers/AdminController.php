@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ExportCategories;
+use App\Models\Category;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -31,10 +33,11 @@ class AdminController extends Controller
     }
     public function categories ()
     {
+        $categories = Category::get();
         $data = [
             'title' => 'Список категорий',
         ];
-        return view('admin.categories', $data);
+        return view('admin.categories', compact('categories'), $data);
     }
     public function test ()
     {
@@ -54,6 +57,18 @@ class AdminController extends Controller
     {
         ExportCategories::dispatch();
         session()->flash('startExportCategories');
+        return back();
+    }
+
+    public function deleteCategory (Request $request) {
+        $input = request()->all();
+        $id = $input['id'];
+        $category = Category::find($id);
+        if ($category->products->count()) {
+            session()->flash('canNotDeleteCategory');
+        } else {
+            $category->delete();
+        };
         return back();
     }
 }

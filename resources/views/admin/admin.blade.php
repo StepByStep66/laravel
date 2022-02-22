@@ -7,8 +7,9 @@
 @section('content')
 
 <h1>Админка</h1>
-<a href="{{ route('adminUsers') }}">Список пользователей</a><br>
-<a href="{{ route('adminProducts') }}">Список продуктов</a><br>
-<a href="{{ route('adminCategories') }}">Список категорий</a>
-
+<div class="btn-group" role="group" aria-label="Basic outlined example">
+  <a role="button" class="btn btn-outline-primary" href="{{ route('adminUsers') }}">Список пользователей</a>
+  <a role="button" class="btn btn-outline-primary" href="{{ route('adminProducts') }}">Список продуктов</a>
+  <a role="button" class="btn btn-outline-primary" href="{{ route('adminCategories') }}">Список категорий</a>
+</div>
 @endsection

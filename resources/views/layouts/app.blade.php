@@ -41,11 +41,14 @@
                     <!-- Right Side Of Navbar -->
                     <!-- Корзина -->
                     <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">   
-                            <a class="nav-link" href="{{ route('cart') }}">
-                                Корзина ({{ array_sum(session('cart') ?? []) }})
-                            </a>
-                    </li>
+                    <a role="button" href="{{ route('cart') }}" class="btn btn-secondary position-relative bg-light text-dark">
+                        Корзина
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ array_sum(session('cart') ?? []) }}
+                            <span class="visually-hidden">Товаров в корзине</span>
+                        </span>
+                    </a>
+
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
@@ -67,6 +70,9 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('admin') }}">
+                                        Главная
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('adminUsers') }}">
                                         Пользователи
                                     </a>
