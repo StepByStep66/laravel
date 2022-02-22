@@ -29,18 +29,42 @@
                 <td>{{ $category->id }}</td>
                 <td style="width: 150px;"><img src="{{ asset('storage') }}/{{ $category->picture }}" class="img-thumbnail" alt="{{ $category->name }}"></td>
                 <td><a href="{{ route('category', $category->id) }}">{{$category->name}}</a></td>
-                <td>{{$category->description}}</td>
+                <td>{{ Str::limit($category->description, 200, ' (...)') }}</td>
                 <td style="width: 150px;" class="text-center">
                     <form method="post" action="{{ route('deleteCategory') }}">
                         @csrf
                         <input type="hidden" name="id" value="{{ $category->id }}">
-                        <button type="submit" class="btn btn-danger">x</button>
+                        <button type="submit" class="btn btn-danger" @if ($category->products->count()) disabled @endif>x</button>
                     </form>                    
                 </td>
             </tr>
         @endforeach    
         </tbody>
     </table>
+</div>
+@if ($errors->isNotEmpty())
+        <div class="alert alert-warning" role="alert">
+            @foreach ($errors->all() as $error)
+                {{ $error }}
+                @if (!$loop->last)<br> @endif
+            @endforeach
+        </div>
+@endif
+    <div class="mb-5">
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Добавить категорию
+        </a>
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                <form method="post" action="{{ route('addCategory') }}">
+                    @csrf
+                    <input class="form-control mb-3" name="name" placeholder="Название"> 
+                    <textarea class="form-control mb-3" name="description" placeholder="Описание"></textarea> 
+                    <button class="btn btn-success" type="submit">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
     @if (session('startExportCategories'))
     <div class="alert alert-success">

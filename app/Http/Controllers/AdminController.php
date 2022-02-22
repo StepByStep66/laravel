@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -34,6 +35,8 @@ class AdminController extends Controller
     public function categories ()
     {
         $categories = Category::get();
+        //$descriptionShort = Str::limit($category->description, 20, ' (...)');
+        //dd($descriptionShort);
         $data = [
             'title' => 'Список категорий',
         ];
@@ -69,6 +72,23 @@ class AdminController extends Controller
         } else {
             $category->delete();
         };
+        return back();
+    }
+    public function addCategory () {
+        $input = request()->all();
+
+        request()->validate([
+            'name' => 'required',
+            'description' => 'required'
+        ]);
+
+        $name = $input['name'];
+        $description = $input['description'];
+        $category = new Category([
+            'name' => $name,
+            'description' => $description
+        ]);
+        $category->save();
         return back();
     }
 }

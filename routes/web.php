@@ -27,6 +27,7 @@ Route::prefix('admin')->middleware('is_admin')->group(function(){
     Route::get('/enterAsUser/{id}', [AdminController::class, 'enterAsUser'])->name('enterAsUser');
     Route::post('/exportCategories', [AdminController::class, 'exportCategories'])->name('exportCategories');
     Route::post('/deleteCategory', [AdminController::class, 'deleteCategory'])->name('deleteCategory');
+    Route::post('/addCategory', [AdminController::class, 'addCategory'])->name('addCategory');
 });
 
 Route::prefix('cart')->group(function(){

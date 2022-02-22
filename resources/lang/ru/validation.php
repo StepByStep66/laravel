@@ -137,5 +137,7 @@ return [
     'attributes' => [
         'name' => 'Имя',
         'email' => 'Почта',
+        'description' => 'Описание'
+
     ],
 ];
