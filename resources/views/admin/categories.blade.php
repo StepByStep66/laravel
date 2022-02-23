@@ -15,13 +15,12 @@
     @endif
     <table class="table table-bordered align-middle">
         <thead>
-            <tr>
-                <td>#</td>
-                <td style="width: 150px;">Изображение</td>
-                <td>Название</td>
-                <td>Описание</td>
-                <td class="text-center">Удалить</td>
-            </tr>
+            <th>#</th>
+            <th style="width: 150px;">Изображение</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th class="text-center">Удалить</th>
+
         </thead>
         <tbody>
         @foreach ($categories as $category)
@@ -56,8 +55,10 @@
         </a>
         <div class="collapse" id="collapseExample">
             <div class="card card-body">
-                <form method="post" action="{{ route('addCategory') }}">
+                <form method="post" action="{{ route('addCategory') }}" enctype="multipart/form-data">
                     @csrf
+                    <label class="form-label">Изображение</label><br>
+                    <input type="file" name="picture" class="form-control mb-3" placeholder="Изображение"> 
                     <input class="form-control mb-3" name="name" placeholder="Название"> 
                     <textarea class="form-control mb-3" name="description" placeholder="Описание"></textarea> 
                     <button class="btn btn-success" type="submit">Сохранить</button>

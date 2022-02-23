@@ -70,4 +70,4 @@
         </div> 
         <button type="submit" class="btn btn-primary">Сохранить</button>
     </form>
-@endsection
+    @endsection
