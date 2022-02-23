@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -74,20 +73,30 @@ class AdminController extends Controller
         };
         return back();
     }
-    public function addCategory () {
+    public function addCategory (Request $request) {
         $input = request()->all();
 
         request()->validate([
             'name' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'picture' => 'mimetypes:image/*|nullable',
         ]);
 
         $name = $input['name'];
         $description = $input['description'];
+        $picture = $input['picture'] ?? null;
         $category = new Category([
             'name' => $name,
-            'description' => $description
+            'description' => $description,
         ]);
+
+        if ($picture) {
+            $ext = $picture->getClientOriginalExtension();
+            $fileName = time() . rand(10000, 99999) . '.' . $ext;
+            $picture->storeAs('public/categories', $fileName);
+            $category->picture = "categories/$fileName";
+        };
+
         $category->save();
         return back();
     }

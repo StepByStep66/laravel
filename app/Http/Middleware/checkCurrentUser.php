@@ -18,10 +18,12 @@ class checkCurrentUser
      */
     public function handle(Request $request, Closure $next)
     {
+        $currUserArr = [];
         $url = $request->getPathInfo();
         $currUser = Auth::user();
         $id = $currUser->id;
-        if ($url === "/profile/$id") {
+        $currUserArr = explode('/', $url);
+        if ($currUserArr[2] == $id) {
            return $next($request); 
         } else {
             return redirect()->route('home');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\address;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +17,13 @@ class ProfileController extends Controller
         $user = User::findOrFail($id);
         $addresses = address::where('user_id', $user->id)->get();
         return view('profile', compact('user', 'addresses')); 
+    }
+
+    public function orderHistory ($id) {
+        $title = 'История заказов';
+        $user = User::findOrFail($id);
+        $orders = Order::where('user_id', $id)->get() ?? null;
+        return view('orderHistory', compact('title', 'user', 'orders'));        
     }
 
     public function save(Request $request)
