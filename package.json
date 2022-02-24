@@ -40,5 +40,8 @@
   "bugs": {
     "url": "https://github.com/StepByStep66/laravel/issues"
   },
-  "homepage": "https://github.com/StepByStep66/laravel#readme"
+  "homepage": "https://github.com/StepByStep66/laravel#readme",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.0.0"
+  }
 }

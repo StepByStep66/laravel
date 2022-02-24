@@ -38,8 +38,12 @@ Route::prefix('cart')->group(function(){
 });
 
 Route::get('/category/{category}', [HomeController::class, 'category'])->name('category');
-Route::get('/profile/{id}', [ProfileController::class, 'profile'])->middleware('check_user')->name('profile');
-Route::get('/profile/{id}/orderhistory', [ProfileController::class, 'orderHistory'])->middleware('check_user')->name('orderHistory');
+
+Route::prefix('profile')->middleware('check_user')->group(function(){
+    Route::get('/{id}', [ProfileController::class, 'profile'])->name('profile');
+    Route::get('/{id}/orderhistory', [ProfileController::class, 'orderHistory'])->name('orderHistory');
+    Route::get('/{id}/repeatorder/{order_id}', [ProfileController::class, 'repeatOrder'])->name('repeatOrder');
+});
 Route::post('/profile/save', [ProfileController::class, 'save'])->name('saveProfile');
 
 Auth::routes();

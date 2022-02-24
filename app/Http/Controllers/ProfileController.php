@@ -17,13 +17,37 @@ class ProfileController extends Controller
         $user = User::findOrFail($id);
         $addresses = address::where('user_id', $user->id)->get();
         return view('profile', compact('user', 'addresses')); 
+    }   
+
+    public function repeatOrder ($id, $order_id) {
+        $order = Order::find($order_id);
+        $products = $order->products;
+        $cart = session('cart') ?? [];
+        foreach ($products as $product) {
+            $productId = $product->id;
+            $quantity = $product->pivot->quantity;
+
+            if (isset($cart[$productId])) {
+                $cart[$productId] = $cart[$productId] + $quantity;
+            } else {
+                $cart[$productId] = $quantity;
+            }
+
+        session()->put('cart', $cart);        
+        }
+        return redirect()->route('cart');
     }
 
     public function orderHistory ($id) {
-        $title = 'История заказов';
+        $data = [
+            'title' =>  'История заказов',
+            'productSum' => 0,
+            'summ' => 0,
+        ];
+        
         $user = User::findOrFail($id);
         $orders = Order::where('user_id', $id)->get() ?? null;
-        return view('orderHistory', compact('title', 'user', 'orders'));        
+        return view('orderHistory', compact('user', 'orders'), $data);        
     }
 
     public function save(Request $request)
