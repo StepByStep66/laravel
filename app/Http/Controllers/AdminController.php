@@ -24,18 +24,29 @@ class AdminController extends Controller
         ];
         return view('admin.users', $data);
     }
-    public function products ()
+    public function products ($id)
     {
-        $data = [
-            'title' => 'Список продуктов',
-        ];
+        if (!$id) {
+            $categories = Category::get();
+            $data = [
+                'title' => 'Список продуктов',
+                'categories' => $categories
+            ];
+        } elseif (Category::findOrFail($id)) {
+            $category = Category::find($id);
+            $data = [
+                'title' => 'Список продуктов',
+                'categories' => null,
+                'category' => $category
+            ];
+        }        
+
         return view('admin.products', $data);
     }
+
     public function categories ()
     {
         $categories = Category::get();
-        //$descriptionShort = Str::limit($category->description, 20, ' (...)');
-        //dd($descriptionShort);
         $data = [
             'title' => 'Список категорий',
         ];

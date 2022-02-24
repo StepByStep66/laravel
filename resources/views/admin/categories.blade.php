@@ -27,7 +27,7 @@
             <tr>
                 <td>{{ $category->id }}</td>
                 <td style="width: 150px;"><img src="{{ asset('storage') }}/{{ $category->picture }}" class="img-thumbnail" alt="{{ $category->name }}"></td>
-                <td><a href="{{ route('category', $category->id) }}">{{$category->name}}</a></td>
+                <td><a href="{{ route('adminProducts', $category->id) }}">{{$category->name}}</a></td>
                 <td>{{ Str::limit($category->description, 200, ' (...)') }}</td>
                 <td style="width: 150px;" class="text-center">
                     <form method="post" action="{{ route('deleteCategory') }}">
