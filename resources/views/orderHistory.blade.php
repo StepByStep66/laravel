@@ -38,7 +38,7 @@
                         <form method="get" action="{{ route('repeatOrder', [Auth::user()->id, $order->id]) }}">
                             @csrf
                             <input name="order_id" hidden value="{{ $order->id }}">
-                            <button class="btn btn-primary btn-success"><i class="fa-solid fa-repeat"></i></button>
+                            <button class="btn btn-primary btn-success" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Повторить заказ"><i class="fa-solid fa-repeat"></i></button>
                         </form>                        
                     </td>
             </td>               
