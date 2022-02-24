@@ -24,23 +24,27 @@ class AdminController extends Controller
         ];
         return view('admin.users', $data);
     }
-    public function products ($id)
-    {
-        if (!$id) {
-            $categories = Category::get();
-            $data = [
-                'title' => 'Список продуктов',
-                'categories' => $categories
-            ];
-        } elseif (Category::findOrFail($id)) {
-            $category = Category::find($id);
-            $data = [
-                'title' => 'Список продуктов',
-                'categories' => null,
-                'category' => $category
-            ];
-        }        
 
+    public function productsFilter (Request $request) {
+        $input = request()->all();
+        $id = $input['category_id'];
+        return redirect()->route('adminProducts', $id);   
+    }
+
+    public function products ($id)
+    {        
+        $categories = Category::get();
+        $data = [
+            'title' => 'Список продуктов',
+            'categories' => $categories,
+        ];   
+        if (!$id) {        
+            $categories = Category::get();
+            $data['oneCategory'] = null;
+        } elseif (Category::findOrFail($id)) {   
+            $category = Category::find($id);        
+            $data['oneCategory'] = $category;
+        }       
         return view('admin.products', $data);
     }
 
