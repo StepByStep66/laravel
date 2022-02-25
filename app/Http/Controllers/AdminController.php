@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ExportCategories;
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,18 +25,33 @@ class AdminController extends Controller
         ];
         return view('admin.users', $data);
     }
-    public function products ()
-    {
+
+    public function productsFilter (Request $request) {
+        $input = request()->all();
+        $id = $input['category_id'];
+        return redirect()->route('adminProducts', $id);   
+    }
+
+    public function products ($id)
+    {        
+        $categories = Category::get();
         $data = [
             'title' => 'Список продуктов',
-        ];
+            'categories' => $categories,
+        ];   
+        if (!$id) {        
+            $categories = Category::get();
+            $data['oneCategory'] = null;
+        } elseif (Category::findOrFail($id)) {   
+            $category = Category::find($id);        
+            $data['oneCategory'] = $category;
+        }       
         return view('admin.products', $data);
     }
+
     public function categories ()
     {
         $categories = Category::get();
-        //$descriptionShort = Str::limit($category->description, 20, ' (...)');
-        //dd($descriptionShort);
         $data = [
             'title' => 'Список категорий',
         ];
@@ -73,6 +89,50 @@ class AdminController extends Controller
         };
         return back();
     }
+
+    public function deleteProduct (Request $request) {
+        $input = request()->all();
+        $id = $input['id'];
+        $product = Product::findOrFail($id);
+        $product->delete();
+        return back();
+    }
+
+    public function addProduct (Request $request) {
+        $input = request()->all();
+
+        request()->validate([
+            'addName' => 'required',
+            'addDescription' => 'required',
+            'addToCategory' => 'required|numeric',
+            'addPicture' => 'mimetypes:image/*|nullable',
+            'addPrice' => 'required|numeric'
+        ]);
+
+
+        $name = $input['addName'];
+        $description = $input['addDescription'];
+        $picture = $input['addPicture'] ?? null;
+        $price = $input['addPrice'];
+        $category_id = $input['addToCategory'];
+        $product = new Product([
+            'name' => $name,
+            'description' => $description,
+            'price' => $price,
+            'category_id' => $category_id
+        ]);
+
+        if ($picture) {
+            $ext = $picture->getClientOriginalExtension();
+            $fileName = time() . rand(10000, 99999) . '.' . $ext;
+            $picture->storeAs('public/products', $fileName);
+            $product->picture = "products/$fileName";
+        };
+
+        $product->save();
+        return back();
+    }
+
     public function addCategory (Request $request) {
         $input = request()->all();
 

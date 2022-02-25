@@ -21,13 +21,16 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('admin')->middleware('is_admin')->group(function(){
     Route::get('/', [AdminController::class, 'admin'])->name('admin');
     Route::get('/users', [AdminController::class, 'users'])->name('adminUsers');
-    Route::get('/products', [AdminController::class, 'products'])->name('adminProducts');
+    Route::get('/products/{category}', [AdminController::class, 'products'])->name('adminProducts');
+    Route::post('/products', [AdminController::class, 'productsFilter'])->name('adminProductsFilter');
     Route::get('/categories', [AdminController::class, 'categories'])->name('adminCategories');
     Route::get('/test', [AdminController::class, 'test'])->name('adminTest');
     Route::get('/enterAsUser/{id}', [AdminController::class, 'enterAsUser'])->name('enterAsUser');
     Route::post('/exportCategories', [AdminController::class, 'exportCategories'])->name('exportCategories');
     Route::post('/deleteCategory', [AdminController::class, 'deleteCategory'])->name('deleteCategory');
     Route::post('/addCategory', [AdminController::class, 'addCategory'])->name('addCategory');
+    Route::post('/addproduct', [AdminController::class, 'addProduct'])->name('addProduct');
+    Route::post('/deleteproduct', [AdminController::class, 'deleteProduct'])->name('deleteProduct');
 });
 
 Route::prefix('cart')->group(function(){

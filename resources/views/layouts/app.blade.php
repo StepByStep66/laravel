@@ -76,7 +76,7 @@
                                     <a class="dropdown-item" href="{{ route('adminUsers') }}">
                                         Пользователи
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('adminProducts') }}">
+                                    <a class="dropdown-item" href="{{ route('adminProducts', 0) }}">
                                         Продукты
                                     </a>
                                     <a class="dropdown-item" href="{{ route('adminCategories') }}">

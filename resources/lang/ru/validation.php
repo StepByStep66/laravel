@@ -137,7 +137,11 @@ return [
     'attributes' => [
         'name' => 'Имя',
         'email' => 'Почта',
-        'description' => 'Описание'
-
+        'description' => 'Описание',
+        'addName' => 'Название',
+        'addDescription' => 'Описание',
+        'addToCategory' => 'Категория',
+        'addPicture' => 'Изображение',
+        'addPrice' => 'Цена'
     ],
 ];
