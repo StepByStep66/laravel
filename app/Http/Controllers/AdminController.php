@@ -90,6 +90,14 @@ class AdminController extends Controller
         return back();
     }
 
+    public function deleteProduct (Request $request) {
+        $input = request()->all();
+        $id = $input['id'];
+        $product = Product::findOrFail($id);
+        $product->delete();
+        return back();
+    }
+
     public function addProduct (Request $request) {
         $input = request()->all();
 
@@ -98,7 +106,7 @@ class AdminController extends Controller
             'addDescription' => 'required',
             'addToCategory' => 'required|numeric',
             'addPicture' => 'mimetypes:image/*|nullable',
-            'addPrice' => 'required'
+            'addPrice' => 'required|numeric'
         ]);
 
 

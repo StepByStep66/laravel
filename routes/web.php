@@ -30,6 +30,7 @@ Route::prefix('admin')->middleware('is_admin')->group(function(){
     Route::post('/deleteCategory', [AdminController::class, 'deleteCategory'])->name('deleteCategory');
     Route::post('/addCategory', [AdminController::class, 'addCategory'])->name('addCategory');
     Route::post('/addproduct', [AdminController::class, 'addProduct'])->name('addProduct');
+    Route::post('/deleteproduct', [AdminController::class, 'deleteProduct'])->name('deleteProduct');
 });
 
 Route::prefix('cart')->group(function(){

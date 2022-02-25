@@ -22,7 +22,7 @@
                     <button type="submit" class="btn btn-success">Выбрать</button>
                 </div>        
             </div>
-        </form>
+        </form> 
     <table class="table table-bordered align-middle">
         <thead class="text-center">
             <th>#</th>
@@ -31,6 +31,7 @@
             <th>Название</th>
             <th>Описание</th>
             <th>Цена</th>
+            <th>Удалить</th>
         </thead>
         <tbody>
             @if (!$oneCategory)
@@ -45,7 +46,14 @@
                             <td>{{ $category->name }}</td>
                             <td>{{ $product->name }}</td>
                             <td>{{ $product->description }}</td>
-                            <td>{{ $product->price }}</td>                               
+                            <td>{{ $product->price }}</td>
+                            <td class="text-center">
+                                <form method="post" action="{{ route('deleteProduct') }}">
+                                    @csrf
+                                    <input type="hidden" name="id" value="{{ $product->id }}">
+                                    <button type="submit" class="btn btn-danger">x</button>
+                                </form>
+                            </td>
                         </tr>
                     @if (!$product)
                     <tr>
@@ -67,7 +75,14 @@
                     <td>{{ $oneCategory->name }}</td>
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->description }}</td>
-                    <td>{{ $product->price }}</td>                               
+                    <td>{{ $product->price }}</td>
+                    <td class="text-center">
+                        <form method="post" action="{{ route('deleteProduct') }}">
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $product->id }}">
+                            <button type="submit" class="btn btn-danger">x</button>
+                        </form>
+                    </td>                               
                 </tr>
             @empty
             <tr>
