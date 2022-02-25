@@ -36,7 +36,7 @@
             @if (!$oneCategory)
                 @foreach ($categories as $category)
                     @php $products = $category->products; @endphp
-                    @forelse ($products as $product)
+                    @foreach ($products as $product)
                         <tr>                
                             <td class="text-center">{{ $product->id }}</td>
                             <td style="width: 150px;">
@@ -47,13 +47,14 @@
                             <td>{{ $product->description }}</td>
                             <td>{{ $product->price }}</td>                               
                         </tr>
-                    @empty
+                    @if (!$product)
                     <tr>
                         <td class="text-center" colspan="6">
                             Нет товаров
                         </td>
                     </tr>
-                    @endforelse 
+                    @endif
+                    @endforeach
                 @endforeach
             @else
             @php $products = $oneCategory->products; @endphp
@@ -78,5 +79,37 @@
             @endif       
         </tbody>
     </table>
+</div>
+@if ($errors->isNotEmpty())
+        <div class="alert alert-warning" role="alert">
+            @foreach ($errors->all() as $error)
+                {{ $error }}
+                @if (!$loop->last)<br> @endif
+            @endforeach
+        </div>
+@endif
+    <div class="mb-5">
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Добавить продукт
+        </a>
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                <form method="post" action="{{ route('addProduct') }}" enctype="multipart/form-data">
+                    @csrf
+                    <label class="form-label">Изображение</label><br>
+                    <input type="file" name="addPicture" class="form-control mb-3" placeholder="Изображение"> 
+                    <input class="form-control mb-3" name="addName" placeholder="Название"> 
+                    <select name="addToCategory" class="form-select mb-3" aria-label="Default select example">
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>   
+                    <textarea class="form-control mb-3" name="addDescription" placeholder="Описание"></textarea> 
+                    <input class="form-control mb-3" name="addPrice" placeholder="Цена"> 
+                    <button class="btn btn-success" type="submit">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

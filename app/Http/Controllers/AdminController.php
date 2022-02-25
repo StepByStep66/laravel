@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ExportCategories;
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -88,6 +89,42 @@ class AdminController extends Controller
         };
         return back();
     }
+
+    public function addProduct (Request $request) {
+        $input = request()->all();
+
+        request()->validate([
+            'addName' => 'required',
+            'addDescription' => 'required',
+            'addToCategory' => 'required|numeric',
+            'addPicture' => 'mimetypes:image/*|nullable',
+            'addPrice' => 'required'
+        ]);
+
+
+        $name = $input['addName'];
+        $description = $input['addDescription'];
+        $picture = $input['addPicture'] ?? null;
+        $price = $input['addPrice'];
+        $category_id = $input['addToCategory'];
+        $product = new Product([
+            'name' => $name,
+            'description' => $description,
+            'price' => $price,
+            'category_id' => $category_id
+        ]);
+
+        if ($picture) {
+            $ext = $picture->getClientOriginalExtension();
+            $fileName = time() . rand(10000, 99999) . '.' . $ext;
+            $picture->storeAs('public/products', $fileName);
+            $product->picture = "products/$fileName";
+        };
+
+        $product->save();
+        return back();
+    }
+
     public function addCategory (Request $request) {
         $input = request()->all();
 
