@@ -40,12 +40,11 @@ class AdminController extends Controller
             'title' => 'Список продуктов',
             'categories' => $categories,
         ];   
-        if (!$id) {        
-            // $categories = Category::get();
+        if (!$category) {        
             $data['oneCategory'] = null;
-        } elseif ($category) {           
+        }            
             $data['oneCategory'] = $category;
-        }       
+               
         return view('admin.products', $data);
     }
 
