@@ -112,9 +112,9 @@
 
         <main class="py-4">
         <div class='container'>
-            <div class="mb-4">
+            <!-- <div class="mb-4">
                 <example-component></example-component>
-            </div>
+            </div> -->
             @yield('content')
         </div>
         </main>
