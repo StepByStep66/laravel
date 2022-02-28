@@ -103,11 +103,28 @@
             @endforeach
         </div>
 @endif
+@if (session('startExportProducts'))
+    <div class="alert alert-success">
+        Выгрузка продуктов запущена <br>
+        <a href="{{ route('getProductFile') }}">Скачать файл</a>
+    </div>
+@endif
+@if (session('startImportProducts'))
+    <div class="alert alert-success">
+        Загрузка продуктов запущена <br>
+    </div>
+@endif
     <div class="mb-5">
-        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#addProduct" role="button" aria-expanded="false" aria-controls="collapseExample">
             Добавить продукт
         </a>
-        <div class="collapse" id="collapseExample">
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#export" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Выгрузка в файл
+        </a>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#import" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Загрузка из файла
+        </a>
+        <div class="collapse" id="addProduct">
             <div class="card card-body">
                 <form method="post" action="{{ route('addProduct') }}" enctype="multipart/form-data">
                     @csrf
@@ -124,6 +141,22 @@
                     <button class="btn btn-success" type="submit">Сохранить</button>
                 </form>
             </div>
+        </div>
+        
+        <div class="collapse" id="export">
+            <div class="card card-body">
+                <form method="post" action="{{ route('exportProducts') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-link">Выгрузить продукты</button>
+                </form>
+            </div>
+        </div>
+        <div class="collapse" id="import">
+        <form method="post" action="{{ route('importProducts') }}" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="productFile" class="form-control mb-3 mt-3" placeholder="Файл для загрузки">  
+                    <button class="btn btn-success" type="submit">Сохранить</button>
+                </form> 
         </div>
     </div>
 </div>

@@ -2,6 +2,7 @@
 
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -19,11 +20,98 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
+Artisan::command('exportProducts', function () {
+        $products = Product::get()->toArray();
+        $file = fopen('exportProducts.csv', 'w');
+        $columns = [
+            'id',
+            'name',
+            'description',
+            'picture',
+            'price',
+            'category',
+            'created_at',
+            'updated_at',
+        ];
+        fputcsv($file, $columns, ';');
+        $productToExport = [];
+        foreach ($products as $product) {
+            //$category['name'] = iconv('utf-8', 'windows-1251/IGNORE', $category['name']);
+            //$category['description'] = iconv('utf-8', 'windows-1251/IGNORE', $category['description']);
+            //$category['picture'] = iconv('utf-8', 'windows-1251/IGNORE', $category['picture']);
+            
+            $category_id = $product['category_id'];
+            $category = Category::find($category_id);
+            $productToExport = [
+                'id' => $product['id'],
+                'name' => $product['name'],
+                'description' => $product['description'],
+                'picture' => $product['picture'],
+                'price' => $product['price'],
+                'category'=> $category->name,
+                'created_at' => $product['created_at'],
+                'updated_at' => $product['updated_at']
+            ];
+            dd($productToExport);
+            $product['category'] = $category->name;
+            
+            fputcsv($file, $product, ';');
+        }
+        fclose($file);
+});
+    
+
 Artisan::command('orderTest', function() {
     $order = Order::find(100006);
     $order->products->each(function ($product) {
         dump($product->pivot->price);
     });
+});
+
+Artisan::command('importProductsFromFile', function () {
+    $file = fopen('storage/app/public/products/importProducts.csv', 'r');
+
+    $i = 0;
+    while ($row = fgetcsv($file, 1000, ';')) {
+        if ($i++ ==0) {
+            $columns = $row;
+            continue;
+        }
+        $data = array_combine($columns, $row);
+        $categoryName = $data['category'];
+        $category = Category::where('name', $categoryName)->first();
+        
+        $category_id = $category->id;
+        $data['category_id'] = $category_id;
+        $data['created_at'] = date('Y-m-d H:i:s');
+        $data['updated_at'] = date('Y-m-d H:i:s');
+        $productId = $data['id'];
+        unset($data['category']);
+        if ($product = Product::find($productId)) {
+            $product->update([
+                'name' => $data['name'],
+                'description' => $data['description'],
+                'picture' => $data['picture'],
+                'price' => $data['price'],
+                'category_id' => $category_id,
+                'created_at' => $data['created_at'],
+                'updated_at' => $data['updated_at'],
+            ]);
+            $product->save();
+        } else {   
+            $product = new Product([
+                'id' => $data['id'],
+                'name' => $data['name'],
+                'description' => $data['description'],
+                'picture' => $data['picture'],
+                'price' => $data['price'],
+                'category_id' => $category_id,
+                'created_at' => $data['created_at'],
+                'updated_at' => $data['updated_at'],
+            ]);
+            $product->save();
+        }
+    }         
 });
 
 Artisan::command('importCategoriesFromFile', function() {
