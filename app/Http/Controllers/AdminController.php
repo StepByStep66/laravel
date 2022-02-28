@@ -34,18 +34,17 @@ class AdminController extends Controller
 
     public function products ($id)
     {        
+        $category = Category::find($id);
         $categories = Category::get();
         $data = [
             'title' => 'Список продуктов',
             'categories' => $categories,
         ];   
-        if (!$id) {        
-            $categories = Category::get();
+        if (!$category) {        
             $data['oneCategory'] = null;
-        } elseif (Category::findOrFail($id)) {   
-            $category = Category::find($id);        
+        }            
             $data['oneCategory'] = $category;
-        }       
+               
         return view('admin.products', $data);
     }
 
