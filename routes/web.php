@@ -27,10 +27,14 @@ Route::prefix('admin')->middleware('is_admin')->group(function(){
     Route::get('/test', [AdminController::class, 'test'])->name('adminTest');
     Route::get('/enterAsUser/{id}', [AdminController::class, 'enterAsUser'])->name('enterAsUser');
     Route::post('/exportCategories', [AdminController::class, 'exportCategories'])->name('exportCategories');
+    Route::post('/exportProducts', [AdminController::class, 'exportProducts'])->name('exportProducts');
+    Route::post('/importproducts', [AdminController::class, 'importProducts'])->name('importProducts');
     Route::post('/deleteCategory', [AdminController::class, 'deleteCategory'])->name('deleteCategory');
     Route::post('/addCategory', [AdminController::class, 'addCategory'])->name('addCategory');
     Route::post('/addproduct', [AdminController::class, 'addProduct'])->name('addProduct');
+    Route::get('/products/{category}', [AdminController::class, 'products'])->name('adminProducts');
     Route::post('/deleteproduct', [AdminController::class, 'deleteProduct'])->name('deleteProduct');
+    Route::get('/getproductfile', [AdminController::class, 'getProductFile'])->name('getProductFile');
 });
 
 Route::prefix('cart')->group(function(){

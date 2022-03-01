@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ExportCategories;
+use App\Jobs\ExportProducts;
+use App\Jobs\importProducts;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
+use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -77,6 +81,36 @@ class AdminController extends Controller
         return back();
     }
 
+    public function exportProducts () {
+        ExportProducts::dispatch();
+        session()->flash('startExportProducts');
+        return back();
+    }
+
+    public function importProducts () {
+        $input = request()->all();
+        request()->validate([
+            'productFile' => 'required'
+        ]);
+        $file = $input['productFile'];
+
+        if ($file) {
+            $file->storeAs('public/products', 'importProducts.csv');
+        };
+
+        importProducts::dispatch();
+        session()->flash('startImportProducts');
+        return back();
+    }
+
+    public function getProductFile ()
+    {
+        $headers = [
+            'Content-Type' => 'text/csv'
+        ];
+        return Storage::download('ExportProducts.csv', 'ExportProducts.csv', $headers);
+    }
+ 
     public function deleteCategory (Request $request) {
         $input = request()->all();
         $id = $input['id'];
